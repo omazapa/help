@@ -1,0 +1,28 @@
+stages:
+  - build
+  - deploy
+
+
+build:
+  stage: build
+  image:
+    name: squidfunk/mkdocs-material
+    entrypoint: [""]
+  script:
+    - mkdocs build
+  artifacts:
+    paths:
+      - public
+  only: 
+    - master
+
+deploy:
+  stage: deploy
+  variables:
+    EOS_MGM_URL: $SWAN_EOS_PROJ_MGM
+    EOS_PATH: $SWAN_EOS_PROJ_BASE_PATH/www/help/
+  image: gitlab-registry.cern.ch/ci-tools/ci-web-deployer
+  script: deploy-eos
+  only: 
+    - master
+  when: on_success
